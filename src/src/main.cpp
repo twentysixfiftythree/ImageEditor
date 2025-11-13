@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include "ImageClass.hpp"
 #include <iostream>
+#include "Transform.h"
 
 int main(int argc, char* argv[]) {
     // create image - either load from file or create blank
@@ -17,8 +18,9 @@ int main(int argc, char* argv[]) {
     sf::RenderWindow window(sf::VideoMode({img->getWidth(), img->getHeight()}), "SFML Image Test");
     window.setFramerateLimit(60);
 
+    Transform trans(*img);
     bool isDrawing = false;
-
+    
     while (window.isOpen()) {
         while (auto event = window.pollEvent()) {
             if (event->is<sf::Event::Closed>()) {
@@ -34,6 +36,12 @@ int main(int argc, char* argv[]) {
             if (const auto* mouseReleased = event->getIf<sf::Event::MouseButtonReleased>()) {
                 if (mouseReleased->button == sf::Mouse::Button::Left) {
                     isDrawing = false;
+                }
+            }
+
+            if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
+                if (keyPressed->code == sf::Keyboard::Key::P) {
+                    trans.adjustBrightness(20);  // Increase brightness by 20
                 }
             }
         }
