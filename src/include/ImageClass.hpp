@@ -70,9 +70,9 @@ public:
     unsigned int getWidth() const { return width; }
     unsigned int getHeight() const { return height; }
 
-    // =========================================================
+
     //  SAFE COPY FUNCTION REQUIRED FOR ROTATION
-    // =========================================================
+
     void copyFrom(const Image& other) {
         width = other.width;
         height = other.height;

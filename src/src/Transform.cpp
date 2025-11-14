@@ -2,9 +2,9 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 
-// ----------------------------------------------------
+
 // Brightness
-// ----------------------------------------------------
+
 
 void Transform::adjustBrightness(signed int coefficient) {
     unsigned int width = image.getWidth();
@@ -31,9 +31,8 @@ void Transform::adjustBrightness(signed int coefficient) {
     image.updateTexture();
 }
 
-// ----------------------------------------------------
 // 90-degree Rotation
-// ----------------------------------------------------
+
 
 void Transform::Rotate(int rotation) {
     // Normalize: 0, 90, 180, 270
@@ -69,7 +68,7 @@ void Transform::Rotate(int rotation) {
         }
     }
 
-    // Copy into existing Image (safe) — NEVER do image = rotated!
+    // Copy into existing Image
     image.copyFrom(rotated);
     image.updateTexture();
 }

@@ -54,7 +54,7 @@ int main(int argc, char* argv[]) {
                     trans.adjustBrightness(20);
                 }
 
-                // Rotate CLOCKWISE 90°
+                // Rotate CW
                 if (keyPressed->code == sf::Keyboard::Key::R) {
                     trans.Rotate(90);
                     window.create(
@@ -63,7 +63,7 @@ int main(int argc, char* argv[]) {
                     );
                 }
 
-                // Rotate COUNTER-CLOCKWISE 90° (270° CW)
+                // Rotate CCW
                 if (keyPressed->code == sf::Keyboard::Key::T) {
                     trans.Rotate(270);
                     window.create(
