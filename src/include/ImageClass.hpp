@@ -30,6 +30,7 @@ public:
             width = image.getSize().x;
             height = image.getSize().y;
         }
+
         texture = sf::Texture(sf::Vector2u(width, height));
         texture.update(image);
         sprite.setTexture(texture, true);
@@ -52,7 +53,6 @@ public:
     }
 
     // update the texture from the image data
-    // the texture in sfml is like the thing that is rendered in graphics.
     void updateTexture() {
         if (needsUpdate) {
             texture.update(image);
@@ -69,4 +69,24 @@ public:
     // Get dimensions
     unsigned int getWidth() const { return width; }
     unsigned int getHeight() const { return height; }
+
+    // =========================================================
+    //  SAFE COPY FUNCTION REQUIRED FOR ROTATION
+    // =========================================================
+    void copyFrom(const Image& other) {
+        width = other.width;
+        height = other.height;
+
+        // deep copy pixel data
+        image = other.image;
+
+        // recreate texture with new size
+        texture = sf::Texture(sf::Vector2u(width, height));
+        texture.update(image);
+
+        // rebind sprite
+        sprite.setTexture(texture, true);
+
+        needsUpdate = false;
+    }
 };

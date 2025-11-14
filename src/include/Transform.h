@@ -1,16 +1,17 @@
-#include "ImageClass.hpp"
 #pragma once
+#include "ImageClass.hpp"
 
 class Transform {
 public:
-// constructor
-	Transform(Image& img) : image(img) {};
-	//implement these in the transform.cpp file
-	void GrayScale();
-	void Rotate(int rotation);
-	void adjustBrightness(signed int coefficient);
-	void adjustContrast(signed int coefficient);
+    Transform(Image& img) : image(img) {}
+
+    void GrayScale();
+    void Rotate(int rotation);
+    void adjustBrightness(int coefficient);
+    void adjustContrast(int coefficient);
+	void Crop(int x, int y, int width, int height);
+
 private:
-	Image& image;
-	void adjustPixelBrightness(signed int coeffient);
+    Image& image;
+    void adjustPixelBrightness(int coefficient);
 };
