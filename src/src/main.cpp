@@ -1,10 +1,19 @@
 #include <SFML/Graphics.hpp>
+#include <imgui-SFML.h>
+#include <imgui.h>
+#include "Transform.h"
 #include "ImageClass.hpp"
 #include <iostream>
-#include "Transform.h"
+#include "ResourceManager.hpp"
+#include "Toolbar.hpp"
 
-int main(int argc, char* argv[]) {
-    // Load image or create blank
+int main(int argc, char* argv[])
+{
+    auto window = sf::RenderWindow(sf::VideoMode({1920u, 1080u}), "CMake SFML Project");
+    window.setFramerateLimit(60);
+    if (!ImGui::SFML::Init(window))
+        return -1;
+
     Image* img;
     if (argc > 1) {
         std::cout << "Loading image: " << argv[1] << std::endl;
@@ -14,86 +23,54 @@ int main(int argc, char* argv[]) {
         img = new Image(800, 600, sf::Color::White);
     }
 
-    sf::RenderWindow window(
-        sf::VideoMode({img->getWidth(), img->getHeight()}),
-        "SFML Image Test"
-    );
-    window.setFramerateLimit(60);
 
-    Transform trans(*img);
-    bool isDrawing = false;
+    bool showFilterMenu = false;
+    float brightness = 0.5f;
+    float contrast = 0.5f;
+    bool greyScale = false;
 
-    while (window.isOpen()) {
+    // Managers and state
+    ResourceManager resourceManager;
+    Transform transform(*img);
+    float prev_brightness = brightness;
 
-        while (auto event = window.pollEvent()) {
 
-            // Window close
-            if (event->is<sf::Event::Closed>()) {
+    sf::Clock clock;
+    while (window.isOpen())
+    {
+        while (const std::optional event = window.pollEvent())
+        {
+            ImGui::SFML::ProcessEvent(window, *event);
+            
+            if (event->is<sf::Event::Closed>())
+            {
                 window.close();
             }
-
-            // Mouse pressed
-            if (const auto* mousePressed = event->getIf<sf::Event::MouseButtonPressed>()) {
-                if (mousePressed->button == sf::Mouse::Button::Left) {
-                    isDrawing = true;
-                }
-            }
-
-            // Mouse released
-            if (const auto* mouseReleased = event->getIf<sf::Event::MouseButtonReleased>()) {
-                if (mouseReleased->button == sf::Mouse::Button::Left) {
-                    isDrawing = false;
-                }
-            }
-
-            // Keyboard input
-            if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
-
-                // Brightness
-                if (keyPressed->code == sf::Keyboard::Key::P) {
-                    trans.adjustBrightness(20);
-                }
-
-                // Rotate CW
-                if (keyPressed->code == sf::Keyboard::Key::R) {
-                    trans.Rotate(90);
-                    window.create(
-                        sf::VideoMode({img->getWidth(), img->getHeight()}),
-                        "SFML Image Test"
-                    );
-                }
-
-                // Rotate CCW
-                if (keyPressed->code == sf::Keyboard::Key::T) {
-                    trans.Rotate(270);
-                    window.create(
-                        sf::VideoMode({img->getWidth(), img->getHeight()}),
-                        "SFML Image Test"
-                    );
-                }
-            }
         }
+        
 
-        // Drawing while mouse is held
-        if (isDrawing) {
-            sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-            if (mousePos.x >= 0 && mousePos.x < img->getWidth() &&
-                mousePos.y >= 0 && mousePos.y < img->getHeight()) {
 
-                for (int dy = -1; dy <= 1; dy++) {
-                    for (int dx = -1; dx <= 1; dx++) {
-                        img->setPixel(mousePos.x + dx, mousePos.y + dy, sf::Color::Black);
-                    }
-                }
-            }
-        }
+        ImGui::SFML::Update(window, clock.restart());
+        
+        FilterState filterState{
+            &brightness,
+            &contrast,
+            &greyScale,
+            &prev_brightness,
+            &showFilterMenu
+        };
+        Toolbar toolbar(&resourceManager, &filterState, &transform);
+        toolbar.buildToolbar();
+
 
         // Rendering
         window.clear();
+        ImGui::SFML::Render(window);
         img->draw(window);
         window.display();
     }
-
+    
+    ImGui::SFML::Shutdown();
     delete img;
     return 0;
 }
