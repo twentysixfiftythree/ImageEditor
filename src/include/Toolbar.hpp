@@ -10,13 +10,13 @@ struct FilterState{
 
 class Toolbar {
 public:
-    Toolbar(ResourceManager* rm, FilterState* st, Transform* tr) 
+    Toolbar(ResourceManager& rm, FilterState& st, Transform& tr) 
         : resourceManager(rm), state(st), transform(tr) {}
     void Filter();
     void Draw();
     void buildToolbar();
 private:
-    ResourceManager* resourceManager;
-    FilterState* state;
-    Transform* transform;
+    ResourceManager& resourceManager;
+    FilterState& state;
+    Transform& transform;
 };

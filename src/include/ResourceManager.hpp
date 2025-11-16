@@ -2,6 +2,7 @@
 #include <unordered_map>
 #include <string>
 #include <SFML/Graphics.hpp>
+#pragma once
 
 class ResourceManager{
 public:

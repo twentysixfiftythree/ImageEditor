@@ -6,7 +6,7 @@ ResourceManager::ResourceManager() {
 }
 
 ResourceManager::~ResourceManager() {
-    // Destructor
+    // destructor
 }
 
 void ResourceManager::addTexture(const std::string& name, const std::string& filepath){
@@ -24,7 +24,7 @@ bool ResourceManager::textureExists(const std::string& name) const {
 }
 void ResourceManager::loadDefaultResources() {
     // Load default textures
-    addTexture("DrawActiveIcon", "assets/DrawActiveIcon.png");
-    addTexture("FilterIcon", "assets/FilterIcon.png");
-    addTexture("RotateIcon", "assets/RotateIcon.png");
+    addTexture("DrawActiveIcon", "assets/DrawActiveIcon.jpg");
+    addTexture("FilterIcon", "assets/FilterIcon.jpg");
+    addTexture("RotateIcon", "assets/RotateIcon.jpg");
 }

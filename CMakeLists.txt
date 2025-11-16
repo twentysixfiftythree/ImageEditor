@@ -30,6 +30,6 @@ FetchContent_Declare(ImGui-SFML
     SYSTEM)
 FetchContent_MakeAvailable(ImGui-SFML)
 
-add_executable(main src/src/main.cpp src/src/Transform.cpp src/src/ResourceManager.cpp)
+add_executable(main src/src/main.cpp src/src/Transform.cpp src/src/ResourceManager.cpp src/src/Toolbar.cpp)
 target_compile_features(main PRIVATE cxx_std_17)
 target_link_libraries(main PRIVATE SFML::Graphics ImGui-SFML::ImGui-SFML)
