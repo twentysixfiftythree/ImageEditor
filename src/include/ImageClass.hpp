@@ -60,10 +60,23 @@ public:
         }
     }
 
-    // draw to a render target
+    // draw image to the screen (target)
     void draw(sf::RenderTarget& target) {
         updateTexture();
+        // this is probably jank cause it's hardcodedish , but we can fix later. this sets the image position
+        // the reason the formula is like this is because sfml places the sprite's position at its top-left corner
+        //also for whatever reason, set position takes in floats and not ints.
+        sf::FloatRect bounds = sprite.getLocalBounds();
+        
+        sf::Vector2u targetSize = target.getSize();
+        float centerX = targetSize.x / 2.f;
+        float centerY = targetSize.y / 2.f;
+
+        sprite.setOrigin({bounds.size.x / 2.f, bounds.size.y / 2.f});
+        sprite.setPosition({centerX, centerY});
+
         target.draw(sprite);
+
     }
 
     // Get dimensions

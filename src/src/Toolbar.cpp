@@ -6,7 +6,14 @@
 
 void Toolbar::Filter() {
     // implementation for Filter toolbar
-    ImGui::Begin("Toolbar");
+    ImGui::SetNextWindowPos(ImVec2(10, 10));
+    ImGui::Begin("##Toolbar", nullptr,
+        ImGuiWindowFlags_NoDecoration |
+        ImGuiWindowFlags_NoBackground |
+        ImGuiWindowFlags_AlwaysAutoResize |
+        ImGuiWindowFlags_NoMove |
+        ImGuiWindowFlags_NoSavedSettings);
+        
     
     if (resourceManager.textureExists("FilterIcon")) {
         const sf::Vector2 FILTER_ICON_SIZE = {50.0f, 50.0f};

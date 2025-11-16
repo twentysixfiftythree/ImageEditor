@@ -7,6 +7,8 @@
 #include <iostream>
 #include "ResourceManager.hpp"
 #include "Toolbar.hpp"
+#include "Scripts.hpp"
+
 
 void setBackground(sf::RenderWindow& window) {
     // keep texture and sprite alive across frames using heap objects
@@ -55,15 +57,8 @@ int main(int argc, char* argv[])
     window.setFramerateLimit(60);
     if (!ImGui::SFML::Init(window))
         return -1;
-
-    Image* img;
-    if (argc > 1) {
-        std::cout << "Loading image: " << argv[1] << std::endl;
-        img = new Image(argv[1]);
-    } else {
-        std::cout << "No image provided. Creating blank canvas." << std::endl;
-        img = new Image(800, 600, sf::Color::White);
-    }
+        
+    Image* img = loadimage(argc, argv);
 
    // managers and state
     bool showFilterMenu = false;
@@ -111,6 +106,7 @@ int main(int argc, char* argv[])
         // draw image in the middle of screen
 
         img->draw(window);
+
         ImGui::SFML::Render(window);
         window.display();
     }
