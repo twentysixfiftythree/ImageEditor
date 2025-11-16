@@ -1,19 +1,19 @@
 #include "Toolbar.hpp"
 #include <imgui-SFML.h>
 #include <imgui.h>
-
+#include <iostream>
 
 
 void Toolbar::Filter() {
     // implementation for Filter toolbar
-    ImGui::SetNextWindowPos(ImVec2(10, 10));
+    ImGui::SetNextWindowPos(ImVec2(10, 100));
     ImGui::Begin("##Toolbar", nullptr,
         ImGuiWindowFlags_NoDecoration |
         ImGuiWindowFlags_NoBackground |
         ImGuiWindowFlags_AlwaysAutoResize |
         ImGuiWindowFlags_NoMove |
         ImGuiWindowFlags_NoSavedSettings);
-        
+
     
     if (resourceManager.textureExists("FilterIcon")) {
         const sf::Vector2 FILTER_ICON_SIZE = {50.0f, 50.0f};
@@ -22,7 +22,7 @@ void Toolbar::Filter() {
         }
     }
 
-    ImGui::End();
+
     
     if(*state.showFilterMenu){
             ImGui::SetNextWindowPos(ImVec2(410, 65.0f));
@@ -56,10 +56,40 @@ void Toolbar::Filter() {
         }
 }
 
+void Toolbar::Draw(){
+    ImGui::SameLine();
+
+    if (resourceManager.textureExists("DrawActiveIcon")) {
+        const sf::Vector2 DRAW_ICON_SIZE = {50.0f, 50.0f};
+        if (ImGui::ImageButton("Draw Button", resourceManager.getTexture("DrawActiveIcon"), {50.0f, 50.0f})) {
+            // implement drawing. do not put all the drawing logic in here though.
+            std::cout << "draw button pressed" << std::endl;
+        }
+    }
+
+    
+
+}
+
+void Toolbar::Rotate(){
+    ImGui::SameLine();
+
+    if (resourceManager.textureExists("RotateIcon")) {
+        const sf::Vector2 DRAW_ICON_SIZE = {50.0f, 50.0f};
+        if (ImGui::ImageButton("Rotate Button", resourceManager.getTexture("RotateIcon"), {50.0f, 50.0f})) {
+            // implement drawing. do not put all the drawing logic in here though.
+            std::cout << "Rotate button pressed" << std::endl;
+            transform.Rotate(90); // rotate 90 degrees clockwise on each press
+        }
+    }
+}
 
 void Toolbar::buildToolbar() {
     // implementation for building the toolbar
     // as we add more tools, we will expand this function
+    // do not change order!
     Filter();
-    // Draw()
+    Draw();
+    Rotate();
+    ImGui::End();
 };

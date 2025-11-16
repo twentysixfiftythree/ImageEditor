@@ -14,6 +14,7 @@ public:
         : resourceManager(rm), state(st), transform(tr) {}
     void Filter();
     void Draw();
+    void Rotate();
     void buildToolbar();
 private:
     ResourceManager& resourceManager;
