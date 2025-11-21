@@ -43,8 +43,18 @@ void Toolbar::Filter() {
 
             //contrast -- team!! implement!!!
             ImGui::SetNextItemWidth(200.0f);
-            ImGui::SliderFloat("Contrast", state.contrast, 0.0f, 1.0f);
+            if (ImGui::SliderFloat("Contrast", state.contrast, 0.0f, 1.0f)) {
+                // implement contrast adjustment
+                float delta = *state.contrast - *state.prev_contrast;
+                int coeff = static_cast<int>(delta * 255.0f);
+                if (coeff != 0) {
+                    transform.adjustContrast(coeff);
+                }
+                *state.prev_contrast = *state.contrast;
+                
+            };
             // implement slider here.
+
             ImGui::Separator();
             ImGui::Checkbox("Greyscale", state.greyScale);
             if (*state.greyScale) {

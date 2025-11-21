@@ -70,6 +70,7 @@ int main(int argc, char* argv[])
     ResourceManager resourceManager;
     Transform transform(*img);
     float prev_brightness = brightness;
+    float prev_contrast = contrast;
 
 
     sf::Clock clock;
@@ -93,6 +94,7 @@ int main(int argc, char* argv[])
             &contrast,
             &greyScale,
             &prev_brightness,
+            &prev_contrast,
             &showFilterMenu
         };
         Toolbar toolbar(resourceManager, filterState, transform, *img);

@@ -5,6 +5,7 @@ struct FilterState{
     float* contrast;
     bool* greyScale;
     float* prev_brightness;
+    float* prev_contrast;
     bool* showFilterMenu;
 };
 

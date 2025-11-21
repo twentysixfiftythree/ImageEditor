@@ -147,3 +147,29 @@ void Transform::revertGrayScale() {
     }
 }
 
+
+// contrast transform
+void Transform::adjustContrast(int coefficient) {
+    unsigned int width = image.getWidth();
+    unsigned int height = image.getHeight();
+    float factor = (259.0f * (coefficient + 255.0f)) / (255.0f * (259.0f - coefficient));
+    for (unsigned int y = 0; y < height; ++y) {
+        for (unsigned int x = 0; x < width; ++x) {
+
+            sf::Color pixel = image.getPixel(x, y);
+
+            int r = static_cast<int>(factor * (static_cast<int>(pixel.r) - 128) + 128);
+            int g = static_cast<int>(factor * (static_cast<int>(pixel.g) - 128) + 128);
+            int b = static_cast<int>(factor * (static_cast<int>(pixel.b) - 128) + 128);
+
+            // manual clamp (min/max)
+            pixel.r = (r < 0 ? 0 : (r > 255 ? 255 : r));
+            pixel.g = (g < 0 ? 0 : (g > 255 ? 255 : g));
+            pixel.b = (b < 0 ? 0 : (b > 255 ? 255 : b));
+
+            image.setPixel(x, y, pixel);
+        }
+    }
+
+    image.updateTexture();
+}
