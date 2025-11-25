@@ -65,6 +65,7 @@ int main(int argc, char* argv[])
     float brightness = 0.5f;
     float contrast = 0.5f;
     bool greyScale = false;
+    bool drawingEnabled = false;
 
  
     ResourceManager resourceManager;
@@ -95,11 +96,32 @@ int main(int argc, char* argv[])
             &greyScale,
             &prev_brightness,
             &prev_contrast,
-            &showFilterMenu
+            &showFilterMenu,
+            &drawingEnabled
         };
         Toolbar toolbar(resourceManager, filterState, transform, *img);
         toolbar.buildToolbar();
 
+        // Handle drawing
+        static int frameCount = 0;
+        if (frameCount++ % 60 == 0) {  // Print every 60 frames
+            std::cout << "Drawing enabled: " << toolbar.isDrawingEnabled() 
+                      << ", Mouse pressed: " << sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) << std::endl;
+        }
+        
+        if (toolbar.isDrawingEnabled()) {
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
+                sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+                std::cout << "Clicking at: " << mousePos.x << ", " << mousePos.y << std::endl;
+                int imgX, imgY;
+                if (img->windowToImageCoords(sf::Vector2f(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y)), window.getSize(), imgX, imgY)) {
+                    std::cout << "Image coords: " << imgX << ", " << imgY << std::endl;
+                    img->drawBrush(imgX, imgY, 10, sf::Color::Red); // Bigger brush, red color for visibility
+                } else {
+                    std::cout << "Coords out of bounds" << std::endl;
+                }
+            }
+        }
 
         // Rendering
         window.clear();

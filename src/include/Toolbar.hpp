@@ -7,6 +7,7 @@ struct FilterState{
     float* prev_brightness;
     float* prev_contrast;
     bool* showFilterMenu;
+    bool* drawingEnabled;
 };
 
 class Toolbar {
@@ -16,6 +17,7 @@ public:
     void Filter();
     void Draw();
     void Rotate();
+    void Save();
     void buildToolbar();
 private:
     ResourceManager& resourceManager;
@@ -23,4 +25,8 @@ private:
     Transform& transform;
     Image& image;
     bool grayScaleApplied = false;
+    bool showSaveDialog = false;
+    char saveFilename[256] = "output.png";
+public:
+    bool isDrawingEnabled() const { return *state.drawingEnabled; }
 };
