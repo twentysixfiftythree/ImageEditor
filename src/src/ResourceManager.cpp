@@ -27,4 +27,5 @@ void ResourceManager::loadDefaultResources() {
     addTexture("DrawActiveIcon", "assets/DrawActiveIcon.jpg");
     addTexture("FilterIcon", "assets/FilterIcon.jpg");
     addTexture("RotateIcon", "assets/RotateIcon.jpg");
+    addTexture("SaveExportIcon", "assets/SaveExportIcon.jpg");
 }

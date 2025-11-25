@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <iostream>
 
 class Image {
 private:
@@ -9,18 +10,22 @@ private:
     unsigned int width;
     unsigned int height;
     bool needsUpdate;
+    bool grayscaleApplied = false;
 
 public:
     Image(unsigned int w, unsigned int h, const sf::Color& fillColor = sf::Color::White) 
         : width(w), height(h), needsUpdate(true), 
           image({w, h}, fillColor),
-          texture(sf::Vector2u(w, h)),
           sprite(texture) {
+        if (!texture.resize(sf::Vector2u(w, h))) {
+            std::cerr << "Failed to create texture of size " << w << "x" << h << std::endl;
+        }
+        texture.update(image);
     }
 
     // constructor to load from file
     Image(const std::string& filename) 
-        : needsUpdate(false), texture(sf::Vector2u(1, 1)), sprite(texture) {
+        : needsUpdate(false), sprite(texture) {
         if (!image.loadFromFile(filename)) {
             // If loading fails, create a blank 800x600 image
             width = 800;
@@ -31,7 +36,9 @@ public:
             height = image.getSize().y;
         }
 
-        texture = sf::Texture(sf::Vector2u(width, height));
+        if (!texture.resize(sf::Vector2u(width, height))) {
+            std::cerr << "Failed to create texture of size " << width << "x" << height << std::endl;
+        }
         texture.update(image);
         sprite.setTexture(texture, true);
     }
@@ -83,6 +90,51 @@ public:
     unsigned int getWidth() const { return width; }
     unsigned int getHeight() const { return height; }
 
+    // Save image to file
+    bool saveToFile(const std::string& filename) {
+        updateTexture(); // Ensure texture is up to date
+        return image.saveToFile(filename);
+    }
+
+    // Draw a circle at a position (for brush drawing)
+    void drawBrush(int centerX, int centerY, int brushSize, const sf::Color& color) {
+        int radius = brushSize / 2;
+        for (int dy = -radius; dy <= radius; ++dy) {
+            for (int dx = -radius; dx <= radius; ++dx) {
+                if (dx * dx + dy * dy <= radius * radius) {
+                    int x = centerX + dx;
+                    int y = centerY + dy;
+                    if (x >= 0 && x < static_cast<int>(width) && y >= 0 && y < static_cast<int>(height)) {
+                        setPixel(x, y, color);
+                    }
+                }
+            }
+        }
+    }
+
+    // Convert window coordinates to image coordinates
+    bool windowToImageCoords(const sf::Vector2f& windowPos, const sf::Vector2u& windowSize, int& imageX, int& imageY) const {
+        // Get sprite position and bounds
+        sf::FloatRect bounds = sprite.getLocalBounds();
+        float centerX = windowSize.x / 2.f;
+        float centerY = windowSize.y / 2.f;
+        
+        // Calculate sprite position (top-left corner)
+        float spriteLeft = centerX - bounds.size.x / 2.f;
+        float spriteTop = centerY - bounds.size.y / 2.f;
+        
+        // Convert to image coordinates
+        float relX = windowPos.x - spriteLeft;
+        float relY = windowPos.y - spriteTop;
+        
+        // Check if within bounds
+        if (relX >= 0 && relX < bounds.size.x && relY >= 0 && relY < bounds.size.y) {
+            imageX = static_cast<int>(relX);
+            imageY = static_cast<int>(relY);
+            return true;
+        }
+        return false;
+    }
 
     //  SAFE COPY FUNCTION REQUIRED FOR ROTATION
 
@@ -94,7 +146,9 @@ public:
         image = other.image;
 
         // recreate texture with new size
-        texture = sf::Texture(sf::Vector2u(width, height));
+        if (!texture.resize(sf::Vector2u(width, height))) {
+            std::cerr << "Failed to resize texture to " << width << "x" << height << std::endl;
+        }
         texture.update(image);
 
         // rebind sprite
